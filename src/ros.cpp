@@ -250,6 +250,17 @@ void TFListener::updatePos(double x, double y, double z, double rotation)
 
 }
 
+QStringList TFListener::getAllFrames(){
+    QStringList list=QString::fromStdString(_listener.allFramesAsString()).split(QRegExp("\n|\r\n|\r"));
+    QStringList toReturn;
+    for ( auto str : list ){
+        QStringList temp = str.split(" ");
+        if(temp.size()>2)
+            toReturn.append(temp[1]);
+    }
+    return toReturn;
+}
+
 void TFListener::listen()
 {
     while(_running) {

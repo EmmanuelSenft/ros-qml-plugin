@@ -2,7 +2,8 @@
 #define ROS_H
 
 #include <thread>
-#include<QQuickItem>
+#include <QQuickItem>
+#include <QStringList>
 
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
@@ -193,6 +194,7 @@ public:
     qreal getZValue() {return _zvalue;}
 
     void onIncomingPose(const geometry_msgs::PoseStamped&);
+    Q_INVOKABLE QStringList getAllFrames(); 
 
 private slots:
     void updatePos(double x, double y, double z, double rotation);
