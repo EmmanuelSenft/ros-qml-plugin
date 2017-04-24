@@ -2,6 +2,7 @@
 #include <QPainter>
 
 #include <ros/ros.h>
+#include <sensor_msgs/image_encodings.h>
 
 #include "RosImageProvider.h"
 
@@ -17,7 +18,15 @@ RosImageProvider::RosImageProvider()
 
 void RosImageProvider::imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 
-    _last_image = QImage(msg->width, msg->height, QImage::Format_RGB888);
+    QImage::Format format = QImage::Format_RGBA8888;
+    if(msg->encoding == sensor_msgs::image_encodings::RGB8)
+        format = QImage::Format_RGB888;
+    else if(msg->encoding == sensor_msgs::image_encodings::RGBA8)
+        format = QImage::Format_RGBA8888; 
+    else if(msg->encoding == sensor_msgs::image_encodings::MONO8)
+        format = QImage::Format_Mono;
+
+    _last_image = QImage(msg->width, msg->height, format);
     memcpy(_last_image.bits(), msg->data.data(), _last_image.byteCount());
 
 }
