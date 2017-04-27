@@ -293,6 +293,7 @@ TFBroadcaster::TFBroadcaster(QQuickItem* /* parent */):
     _initialized(false),
     _active(true),
     _running(false),
+    _initialized(false),
     _target(nullptr),
     _origin(nullptr),
     _frame(""),
