@@ -13,7 +13,7 @@
 #include <image_transport/image_transport.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
-
+#include <freeplay_sandbox_msgs/ListIntStamped.h>
 
 /**
  * @brief A QtQuick item that follows a ROS pose published on a topic 'topic'.
@@ -160,6 +160,36 @@ private:
     ros::NodeHandle _node;
     ros::Publisher _publisher;
 };
+
+/**
+ * @brief A QtQuick item that follows a ROS int list published on a topic 'topic'.
+ */
+class RosListIntSubscriber : public QQuickItem {
+Q_OBJECT
+    Q_PROPERTY(QList<int> list MEMBER _list NOTIFY onListChanged)
+    Q_PROPERTY(QString topic WRITE setTopic MEMBER _topic)
+
+public:
+
+    RosListIntSubscriber(QQuickItem* parent = 0){}
+
+    virtual ~RosListIntSubscriber() {}
+
+    void setTopic(QString topic);
+    void onIncomingList(const freeplay_sandbox_msgs::ListIntStamped &list);
+
+signals:
+    void onListChanged();
+
+private:
+
+    QString _topic;
+    QList<int> _list;
+
+    ros::NodeHandle _node;
+    ros::Subscriber _incoming_message;
+};
+
 
 /**
  * @brief A QtQuick item that follows a ROS TF frame.

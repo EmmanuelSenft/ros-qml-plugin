@@ -10,6 +10,7 @@
 #include <visualization_msgs/Marker.h>
 #include <geometry_msgs/Point.h>
 #include <tf/transform_datatypes.h>
+#include <freeplay_sandbox_msgs/ListIntStamped.h>
 
 #include "ros.h"
 
@@ -143,6 +144,26 @@ void RosStringSubscriber::setTopic(QString topic)
 
     _topic = topic;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+void RosListIntSubscriber::onIncomingList(const freeplay_sandbox_msgs::ListIntStamped &list)
+{
+    _list.clear();
+    for(auto val : list.data)
+        _list.append(val);
+    emit onListChanged();
+}
+
+void RosListIntSubscriber::setTopic(QString topic)
+{
+    _incoming_message= _node.subscribe(topic.toStdString(), 1, &RosListIntSubscriber::onIncomingList,this);
+
+    _topic = topic;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
