@@ -4,12 +4,14 @@
 #include <thread>
 #include <QQuickItem>
 #include <QStringList>
+#include <QVector>
 
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <std_msgs/String.h>
+#include <std_msgs/Int32MultiArray.h>
 #include <image_transport/image_transport.h>
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
@@ -185,6 +187,41 @@ private:
 
     QString _topic;
     QList<int> _list;
+
+    ros::NodeHandle _node;
+    ros::Subscriber _incoming_message;
+};
+
+
+/**
+ * @brief A QtQuick item that follows a ROS Int32MutliArray published on a topic 'topic'.
+ * supports only 2D arrays
+ */
+class RosArrayIntSubscriber : public QQuickItem {
+Q_OBJECT
+    Q_PROPERTY(QVector<int> data MEMBER _data NOTIFY onDataChanged)
+    Q_PROPERTY(QList<QString> headers MEMBER _headers)
+    Q_PROPERTY(QVector<int> dimensions MEMBER _dimensions)
+    Q_PROPERTY(QString topic WRITE setTopic MEMBER _topic)
+
+public:
+
+    RosArrayIntSubscriber(QQuickItem* parent = 0){}
+
+    virtual ~RosArrayIntSubscriber() {}
+
+    void setTopic(QString topic);
+    void onIncomingMessage(const std_msgs::Int32MultiArray &message);
+
+signals:
+    void onDataChanged();
+
+private:
+
+    QString _topic;
+    QVector<int> _data;
+    QVector<int> _dimensions;
+    QList<QString> _headers;
 
     ros::NodeHandle _node;
     ros::Subscriber _incoming_message;

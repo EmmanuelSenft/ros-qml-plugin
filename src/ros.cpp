@@ -164,6 +164,31 @@ void RosListIntSubscriber::setTopic(QString topic)
     _topic = topic;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+void RosArrayIntSubscriber::onIncomingMessage(const std_msgs::Int32MultiArray &message)
+{
+    _data.clear();
+    _headers.clear();
+    _dimensions.clear();
+    for(uint i=0;i<message.layout.dim.size();i++){
+        _dimensions.append(message.layout.dim[i].size);
+        _headers.append(QString::fromStdString(message.layout.dim[i].label));
+    }
+    for( auto a : message.data)
+        _data.append(a);
+    emit onDataChanged();
+}
+
+void RosArrayIntSubscriber::setTopic(QString topic)
+{
+    _incoming_message= _node.subscribe(topic.toStdString(), 1, &RosArrayIntSubscriber::onIncomingMessage, this);
+
+    _topic = topic;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
