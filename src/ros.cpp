@@ -11,6 +11,7 @@
 #include <geometry_msgs/Point.h>
 #include <tf/transform_datatypes.h>
 #include <freeplay_sandbox_msgs/ListIntStamped.h>
+#include <freeplay_sandbox_msgs/ContinuousAction.h>
 
 #include "ros.h"
 
@@ -128,8 +129,67 @@ void RosPosePublisher::publish(){
     _publisher.publish(pose);
 }
 
+////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+RosActionPublisher::RosActionPublisher(QQuickItem *parent):
+    _pixel2meter(1),
+    _target(nullptr),
+    _origin(nullptr),
+    _topic("topic"),
+    _frame(""),
+    _strings(),
+    _width(0),
+    _height(0)
+{
+}
+
+void RosActionPublisher::setTopic(QString topic)
+{
+    _publisher = _node.advertise<freeplay_sandbox_msgs::ContinuousAction>(topic.toStdString(), 1);
+    _topic = topic;
+}
+
+
+void RosActionPublisher::setTarget(QQuickItem* target)
+{
+   _target = target;
+}
+
+void RosActionPublisher::setFrame(QString frame)
+{
+	_frame = frame;
+}
+
+void RosActionPublisher::publish(){
+    double x,y, theta;
+    if (_origin) {
+        x = _origin->mapFromItem(_target,QPoint(0,0)).x() * _pixel2meter;
+        y = - _origin->mapFromItem(_target,QPoint(0,0)).y() * _pixel2meter;
+        theta = (_target->rotation() - _origin->rotation()) * M_PI/180;
+    }
+    else {
+        x = _target->mapToScene(QPoint(0,0)).x() * _pixel2meter;
+        y = -_target->mapToScene(QPoint(0,0)).y() * _pixel2meter;
+        theta = -_target->rotation() * M_PI/180;
+    }
+
+    freeplay_sandbox_msgs::ContinuousAction action;
+	action.header.frame_id = _frame.toStdString();
+	action.header.stamp = ros::Time(0);
+	action.pose.position.x = x;
+	action.pose.position.y = y;
+	action.pose.position.z = 0;
+    tf::Quaternion q;
+    q.setRPY(0, 0, theta);
+	quaternionTFToMsg(q,action.pose.orientation);
+	for(auto str : _strings)
+	    action.strings.push_back(str.toStdString());
+    _publisher.publish(action);
+}
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 void RosStringSubscriber::onIncomingString(const std_msgs::String &str)

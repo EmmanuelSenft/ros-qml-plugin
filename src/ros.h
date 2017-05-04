@@ -17,6 +17,7 @@
 #include <sensor_msgs/Image.h>
 #include <freeplay_sandbox_msgs/ListIntStamped.h>
 
+#include <freeplay_sandbox_msgs/ContinuousAction.h>
 /**
  * @brief A QtQuick item that follows a ROS pose published on a topic 'topic'.
  *
@@ -112,6 +113,43 @@ private:
 };
 
 /**
+ * @brief A QtQuick item that publish a freeplay continuous action message consisting of a 
+ * stamped ROS pose and a list of string on a topic 'topic'.
+ */
+class RosActionPublisher : public QQuickItem {
+Q_OBJECT
+    Q_PROPERTY(QQuickItem* target WRITE setTarget MEMBER _target)
+    Q_PROPERTY(QQuickItem* origin MEMBER _origin)
+    Q_PROPERTY(QStringList strings MEMBER _strings)
+    Q_PROPERTY(QString frame WRITE setFrame MEMBER _frame)
+    Q_PROPERTY(double pixelscale MEMBER _pixel2meter)
+    Q_PROPERTY(QString topic WRITE setTopic MEMBER _topic)
+
+public:
+    RosActionPublisher(QQuickItem* parent = 0);
+    virtual ~RosActionPublisher() {}
+
+    Q_INVOKABLE void publish();
+
+    void setTopic(QString topic);
+    void setTarget(QQuickItem* target);
+    void setFrame(QString frame);
+private:
+    qreal _pixel2meter;
+
+    QQuickItem* _target;
+    QQuickItem* _origin;
+
+    QString _topic;
+    QString _frame;
+    QStringList _strings;
+
+    int _width;
+    int _height;
+
+    ros::NodeHandle _node;
+    ros::Publisher _publisher;
+};
  * @brief A QtQuick item that follows a ROS String published on a topic 'topic'.
  */
 class RosStringSubscriber : public QQuickItem {
