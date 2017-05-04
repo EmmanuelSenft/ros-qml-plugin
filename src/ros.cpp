@@ -35,6 +35,7 @@ RosPoseSubscriber::RosPoseSubscriber(QQuickItem* /* parent */):
 
 void RosPoseSubscriber::onIncomingPose(const geometry_msgs::PoseStamped &pose)
 {
+    _frame = QString::fromStdString(pose.header.frame_id);
     emit onMsgReceived(pose.pose.position.x, pose.pose.position.y, pose.pose.position.z, 0);
 }
 

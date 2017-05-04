@@ -34,6 +34,7 @@ Q_OBJECT
     Q_PROPERTY(double pixelscale MEMBER _pixel2meter)
     Q_PROPERTY(QString topic WRITE setTopic MEMBER _topic)
     Q_PROPERTY(qreal zvalue READ getZValue NOTIFY onZValueChanged)
+    Q_PROPERTY(QString frame MEMBER _frame)
 
 public:
 
@@ -58,7 +59,7 @@ signals:
 private:
 
     QString _topic;
-
+    QString _frame;
     QQuickItem* _origin;
     double _pixel2meter;
 
