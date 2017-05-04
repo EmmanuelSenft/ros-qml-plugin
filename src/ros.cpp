@@ -189,8 +189,62 @@ void RosActionPublisher::publish(){
 	    action.strings.push_back(str.toStdString());
     _publisher.publish(action);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+RosActionSubscriber::RosActionSubscriber(QQuickItem *parent):
+    _pixel2meter(1),
+    _origin(nullptr),
+    _topic(""),
+    _frame(""),
+    _strings(),
+    _width(0),
+    _height(0)
+{
+    connect(this, SIGNAL(onUpdatePose(double, double)),
+            this, SLOT(updatePose(double, double)));
 }
 
+void RosActionSubscriber::onIncomingAction(const freeplay_sandbox_msgs::ContinuousAction& message)
+{
+    _frame = QString::fromStdString(message.header.frame_id);
+    _strings.clear();
+    for(auto str : message.strings)
+        _strings.append(QString::fromStdString(str));
+
+    double x = message.pose.position.x; 
+    double y = message.pose.position.y; 
+    //double z = message.pose.position.x; 
+    double px,py;
+    if (_origin) {
+        px = x / _pixel2meter + _origin->x();
+        py = -y / _pixel2meter + _origin->y();
+    }
+    else {
+        px = x / _pixel2meter;
+        py = -y / _pixel2meter;
+    }
+
+    emit onUpdatePose(px, py);
+}
+
+void RosActionSubscriber::updatePose(double x, double y){
+    setX(x);
+    setY(y);
+    emit actionReceived();
+}
+
+void RosActionSubscriber::setTopic(QString topic)
+{
+    _subscriber = _node.subscribe(topic.toStdString(), 1, &RosActionSubscriber::onIncomingAction,this);
+
+    _topic = topic;
+}
+
+//////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 void RosStringSubscriber::onIncomingString(const std_msgs::String &str)
