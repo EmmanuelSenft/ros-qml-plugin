@@ -17,6 +17,8 @@
 #include <sensor_msgs/Image.h>
 #include <freeplay_sandbox_msgs/ListIntStamped.h>
 #include <freeplay_sandbox_msgs/ContinuousAction.h>
+#include <freeplay_sandbox_msgs/RewardMessage.h>
+
 /**
  * @brief A QtQuick item that follows a ROS pose published on a topic 'topic'.
  *
@@ -111,6 +113,33 @@ private:
     ros::NodeHandle _node;
     ros::Publisher _publisher;
 };
+
+/**
+ * @brief A QtQuick item that publish a freeplay reward message consisting of a 
+ * reward value and a list of string on a topic 'topic'.
+ */
+class RosRewardPublisher : public QQuickItem {
+Q_OBJECT
+    Q_PROPERTY(QStringList strings MEMBER _strings)
+    Q_PROPERTY(bool reward MEMBER _reward)
+    Q_PROPERTY(QString topic WRITE setTopic MEMBER _topic)
+
+public:
+    RosRewardPublisher(QQuickItem* parent = 0);
+    virtual ~RosRewardPublisher() {}
+
+    Q_INVOKABLE void publish();
+
+    void setTopic(QString topic);
+private:
+    QString _topic;
+    bool _reward;
+    QStringList _strings;
+
+    ros::NodeHandle _node;
+    ros::Publisher _publisher;
+};
+
 
 /**
  * @brief A QtQuick item that publish a freeplay continuous action message consisting of a 

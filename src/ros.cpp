@@ -12,6 +12,7 @@
 #include <tf/transform_datatypes.h>
 #include <freeplay_sandbox_msgs/ListIntStamped.h>
 #include <freeplay_sandbox_msgs/ContinuousAction.h>
+#include <freeplay_sandbox_msgs/RewardMessage.h>
 
 #include "ros.h"
 
@@ -129,6 +130,33 @@ void RosPosePublisher::publish(){
 
     _publisher.publish(pose);
 }
+
+////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+RosRewardPublisher::RosRewardPublisher(QQuickItem *parent):
+    _topic("topic"),
+    _reward(0),
+    _strings()
+{
+}
+
+void RosRewardPublisher::setTopic(QString topic)
+{
+    _publisher = _node.advertise<freeplay_sandbox_msgs::RewardMessage>(topic.toStdString(), 1);
+    _topic = topic;
+}
+
+void RosRewardPublisher::publish(){
+    freeplay_sandbox_msgs::RewardMessage message;
+    message.header.stamp = ros::Time(0);
+    message.reward = _reward;
+	for(auto str : _strings)
+	    message.strings.push_back(str.toStdString());
+    _publisher.publish(message);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
