@@ -151,6 +151,7 @@ Q_OBJECT
     Q_PROPERTY(QQuickItem* origin MEMBER _origin)
     Q_PROPERTY(QStringList strings MEMBER _strings)
     Q_PROPERTY(QString frame WRITE setFrame MEMBER _frame)
+    Q_PROPERTY(QString type MEMBER _type)
     Q_PROPERTY(double pixelscale MEMBER _pixel2meter)
     Q_PROPERTY(QString topic WRITE setTopic MEMBER _topic)
 
@@ -171,6 +172,7 @@ private:
 
     QString _topic;
     QString _frame;
+    QString _type;
     QStringList _strings;
 
     int _width;
@@ -190,6 +192,7 @@ Q_OBJECT
     Q_PROPERTY(QQuickItem* origin MEMBER _origin)
     Q_PROPERTY(QStringList strings MEMBER _strings)
     Q_PROPERTY(QString frame MEMBER _frame)
+    Q_PROPERTY(QString type MEMBER _type)
     Q_PROPERTY(double pixelscale MEMBER _pixel2meter)
     Q_PROPERTY(QString topic WRITE setTopic MEMBER _topic)
 
@@ -215,6 +218,7 @@ private:
 
     QString _topic;
     QString _frame;
+    QString _type;
     QStringList _strings;
 
     int _width;
