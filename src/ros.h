@@ -16,6 +16,7 @@
 #include <sensor_msgs/CameraInfo.h>
 #include <sensor_msgs/Image.h>
 #include <freeplay_sandbox_msgs/ListIntStamped.h>
+#include <freeplay_sandbox_msgs/ListFloatStamped.h>
 #include <freeplay_sandbox_msgs/ContinuousAction.h>
 #include <freeplay_sandbox_msgs/RewardMessage.h>
 
@@ -282,6 +283,30 @@ private:
 };
 
 /**
+ *  @brief A QtQuick item that can publish a list of float on a topic 'topic'
+ */
+
+class RosListFloatPublisher : public QQuickItem {
+Q_OBJECT
+    Q_PROPERTY(QList<qreal> list MEMBER _list)
+    Q_PROPERTY(QString topic WRITE setTopic MEMBER _topic)
+
+public:
+    RosListFloatPublisher(QQuickItem* parent = 0){}
+    virtual ~RosListFloatPublisher() {}
+
+    void setTopic(QString topic);
+    Q_INVOKABLE void publish();
+
+private:
+    QString _topic;
+    QList<qreal> _list;
+
+    ros::NodeHandle _node;
+    ros::Publisher _publisher;
+};
+
+
  * @brief A QtQuick item that follows a ROS int list published on a topic 'topic'.
  */
 class RosListIntSubscriber : public QQuickItem {

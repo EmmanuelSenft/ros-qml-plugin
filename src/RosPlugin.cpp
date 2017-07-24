@@ -24,6 +24,7 @@ void RosPlugin::registerTypes(const char *uri){
     qmlRegisterType<RosActionSubscriber>(uri, 1, 0, "RosActionSubscriber");
     qmlRegisterType<RosStringSubscriber>(uri, 1, 0, "RosStringSubscriber");
     qmlRegisterType<RosListIntSubscriber>(uri, 1, 0, "RosListIntSubscriber");
+    qmlRegisterType<RosListFloatPublisher>(uri, 1, 0, "RosListFloatPublisher");
     qmlRegisterType<RosArrayIntSubscriber>(uri, 1, 0, "RosArrayIntSubscriber");
     qmlRegisterType<RosStringPublisher>(uri, 1, 0, "RosStringPublisher");
     qmlRegisterType<RosRewardPublisher>(uri, 1, 0, "RosRewardPublisher");
