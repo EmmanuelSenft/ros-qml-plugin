@@ -319,6 +319,23 @@ void RosListFloatPublisher::publish(){
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+void RosListFloatSubscriber::onIncomingList(const freeplay_sandbox_msgs::ListFloatStamped &list)
+{
+    _list.clear();
+    for(auto val : list.data)
+        _list.append(val);
+    emit onListChanged();
+}
+
+void RosListFloatSubscriber::setTopic(QString topic)
+{
+    _incoming_message= _node.subscribe(topic.toStdString(), 1, &RosListFloatSubscriber::onIncomingList,this);
+
+    _topic = topic;
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -513,7 +530,6 @@ TFBroadcaster::TFBroadcaster(QQuickItem* /* parent */):
     _initialized(false),
     _active(true),
     _running(false),
-    _initialized(false),
     _target(nullptr),
     _origin(nullptr),
     _frame(""),

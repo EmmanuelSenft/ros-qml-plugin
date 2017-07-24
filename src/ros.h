@@ -306,7 +306,37 @@ private:
     ros::Publisher _publisher;
 };
 
+/**
+ * @brief A QtQuick item that follows a ROS float list published on a topic 'topic'.
+ */
+class RosListFloatSubscriber : public QQuickItem {
+Q_OBJECT
+    Q_PROPERTY(QList<qreal> list MEMBER _list NOTIFY onListChanged)
+    Q_PROPERTY(QString topic WRITE setTopic MEMBER _topic)
 
+public:
+
+    RosListFloatSubscriber(QQuickItem* parent = 0){}
+
+    virtual ~RosListFloatSubscriber() {}
+
+    void setTopic(QString topic);
+    void onIncomingList(const freeplay_sandbox_msgs::ListFloatStamped &list);
+
+signals:
+    void onListChanged();
+
+private:
+
+    QString _topic;
+    QList<qreal> _list;
+
+    ros::NodeHandle _node;
+    ros::Subscriber _incoming_message;
+};
+
+
+/**
  * @brief A QtQuick item that follows a ROS int list published on a topic 'topic'.
  */
 class RosListIntSubscriber : public QQuickItem {
