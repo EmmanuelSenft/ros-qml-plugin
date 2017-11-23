@@ -153,6 +153,7 @@ Q_OBJECT
     Q_PROPERTY(QStringList strings MEMBER _strings)
     Q_PROPERTY(QString frame WRITE setFrame MEMBER _frame)
     Q_PROPERTY(QString type MEMBER _type)
+    Q_PROPERTY(double reward MEMBER _reward)
     Q_PROPERTY(double pixelscale MEMBER _pixel2meter)
     Q_PROPERTY(QString topic WRITE setTopic MEMBER _topic)
 
@@ -179,6 +180,8 @@ private:
     int _width;
     int _height;
 
+    double _reward;
+
     ros::NodeHandle _node;
     ros::Publisher _publisher;
 };
@@ -194,6 +197,7 @@ Q_OBJECT
     Q_PROPERTY(QStringList strings MEMBER _strings)
     Q_PROPERTY(QString frame MEMBER _frame)
     Q_PROPERTY(QString type MEMBER _type)
+    Q_PROPERTY(double reward MEMBER _reward)
     Q_PROPERTY(double pixelscale MEMBER _pixel2meter)
     Q_PROPERTY(QString topic WRITE setTopic MEMBER _topic)
 
@@ -224,6 +228,8 @@ private:
 
     int _width;
     int _height;
+
+    double _reward;
 
     ros::NodeHandle _node;
     ros::Subscriber _subscriber;

@@ -170,6 +170,7 @@ RosActionPublisher::RosActionPublisher(QQuickItem *parent):
     _topic("topic"),
     _frame(""),
     _type(""),
+    _reward(0),
     _strings(),
     _width(0),
     _height(0)
@@ -218,6 +219,7 @@ void RosActionPublisher::publish(){
 	for(auto str : _strings)
 	    action.strings.push_back(str.toStdString());
 	action.type = _type.toStdString();
+	action.reward = _reward;
     _publisher.publish(action);
 }
 
@@ -233,7 +235,8 @@ RosActionSubscriber::RosActionSubscriber(QQuickItem *parent):
     _type(""),
     _strings(),
     _width(0),
-    _height(0)
+    _height(0),
+    _reward(0)
 {
     connect(this, SIGNAL(onUpdatePose(double, double)),
             this, SLOT(updatePose(double, double)));
@@ -246,6 +249,7 @@ void RosActionSubscriber::onIncomingAction(const freeplay_sandbox_msgs::Continuo
     for(auto str : message.strings)
         _strings.append(QString::fromStdString(str));
     _type = QString::fromStdString(message.type);
+    _reward = message.reward;
 
     double x = message.pose.position.x; 
     double y = message.pose.position.y; 
