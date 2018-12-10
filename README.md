@@ -1,12 +1,16 @@
 ROS QML plugin
 ==============
 
+Forked version from Séverin Lemaignan.
+Updated to add the support to specific messages used in a study.
+
 Supports:
 
 - publishing the pose of QML items as TF frames
 - publishing QML items as ROS images
 - subscribing to ROS poses to move a QML item
 - signaling events by sending an `Empty` message on a specfic topic
+- sending and receiving special ContinuousAction messages for the WoZ++ study
 
 When used in conjunction with QML `Box2D` plugin, it can also publish the
 (Box2D) bounding boxes of items as polygons.
