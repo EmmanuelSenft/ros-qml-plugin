@@ -16,10 +16,25 @@ RosImageProvider::RosImageProvider()
 }
 
 void RosImageProvider::imageCallback(const sensor_msgs::ImageConstPtr& msg) {
+    // Inspired from https://github.com/KubaO/stackoverflown/blob/master/questions/wip-main.cpp
+    QImage::Format format = {};
+    if (msg->encoding == "rgb8" || msg->encoding == "bgr8")
+       format = QImage::Format_RGB888;
+    else if (msg->encoding == "rgba8" || msg->encoding == "bgra8")
+       format = QImage::Format_RGBA8888_Premultiplied;
+    else if (msg->encoding == "mono8")
+       format = QImage::Format_Grayscale8;
+    else
+       return;
 
-    _last_image = QImage(msg->width, msg->height, QImage::Format_RGB888);
-    memcpy(_last_image.bits(), msg->data.data(), _last_image.byteCount());
-
+    if (msg->encoding == "bgr8" || msg->encoding == "bgra8"){
+        _last_image = QImage(msg->data.data(), msg->width, msg->height, format).rgbSwapped();
+    }
+    else{
+        _last_image = QImage(msg->width, msg->height, format);
+        memcpy(_last_image.bits(), msg->data.data(), _last_image.byteCount());
+    }
+    
 }
 
 QImage RosImageProvider::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
@@ -28,10 +43,10 @@ QImage RosImageProvider::requestImage(const QString &id, QSize *size, const QSiz
     if (_topic != id.toStdString()) {
         _topic = id.toStdString();
         cout << "Subscribing to topic " << _topic << endl;
-        _sub = _it.subscribe(_topic, 1, &RosImageProvider::imageCallback, this);
+        image_transport::TransportHints hints("compressed");
+        cout<< "compressed" <<endl;
+        _sub = _it.subscribe(_topic, 1, &RosImageProvider::imageCallback, this, hints);
     }
-
-    cout << "Image requested" << endl;
 
     QImage result;
 

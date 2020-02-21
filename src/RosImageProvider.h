@@ -27,6 +27,7 @@ private:
     image_transport::Subscriber _sub;
 
     QImage _last_image;
+    QImage _temp_image;
 };
 
 #endif
